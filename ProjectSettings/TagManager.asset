@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Bishop White
+  - Bishop White 2
+  - King White
+  - Knight White
+  - Knight White 2
+  - Rock White
+  - Queen White
+  - Rock White 2
+  - Pawn White
+  - Pawn White 2
+  - Pawn White 3
+  - Pawn White 4
+  - Pawn White 5
+  - Pawn White 6
+  - Pawn White 7
+  - Pawn White 8
+  - Pawn Black
+  - Pawn Black 2
+  - Pawn Black 3
+  - Pawn Black 4
+  - Pawn Black 5
+  - Pawn Black 6
+  - Pawn Black 7
+  - Pawn Black 8
+  - King Black
+  - Bishop Black
+  - Bishop Black 2
+  - Knight Black
+  - Knight Black 2
+  - Queen Black
+  - Rock Black
+  - Rock Black 2
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
