@@ -56,6 +56,13 @@ public class GameController : MonoBehaviour {
 
     }
 
+    /// <summary>
+    /// check whether a piece can be moved to a specified place on chessboard.
+    /// </summary>
+    /// <param name="piece">piece which is about to be moved</param>
+    /// <param name="targetRow">row number of target position</param>
+    /// <param name="targetColumn">column number of target position</param>
+    /// <returns>whether a piece can be moved to a specified place on chessboard.</returns>
     internal bool checkValidity(PieceScript piece, int targetRow, int targetColumn) {
         if(targetRow<0||targetRow>=8||targetColumn<0||targetColumn>=8){
             return false;
@@ -66,6 +73,15 @@ public class GameController : MonoBehaviour {
         }
         return true;
     }
+
+    /// <summary>
+    /// try to change the LOGIC POSITION of a piece ON THE CHESSBOARD. The real positition of the piece will not be effected.
+    /// Besides, if the action is valid, the piece's material will be change to original material
+    /// </summary>
+    /// <param name="piece">piece which is about to be moved</param>
+    /// <param name="targetRow">row number of target position</param>
+    /// <param name="targetColumn">column number of target position</param>
+    /// <returns>whether it is leagal to do so</returns>
     internal bool moveTo(PieceScript piece, int targetRow, int targetColumn){
          if (checkValidity(piece, targetRow, targetColumn)) {
             piece.switchToNormalApperance();
@@ -77,7 +93,15 @@ public class GameController : MonoBehaviour {
             return false;
         }
     }
-
+    
+    /// <summary>
+    /// move the piece to the specified row and column. Only change the objection's POSITION
+    /// IN UNITY WORLD, NOT the logic place of this piece. Besides, if the target position is legal, the material
+    /// of the piece will be changed to "selected". Otherwise it will be changed to "error"
+    /// </summary>
+    /// <param name="piece">piece which is about to be moved</param>
+    /// <param name="targetRow">row number of target position</param>
+    /// <param name="targetColumn">column number of target position</param>
     internal void hoverOn(PieceScript piece, int targetRow, int targetColumn) {
         //check whether this place is valid
         if (checkValidity(piece, targetRow, targetColumn)) {

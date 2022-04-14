@@ -46,12 +46,24 @@ public class PieceScript : MonoBehaviour {
 
     }
 
+    /// <summary>
+    /// set value for rowOnChessBoard and columnOnChessBoard 
+    /// </summary>
+    /// <param name="row">value for rowOnChessBoard</param>
+    /// <param name="column">value for columnOnChessBoard </param>
+    /// <returns>this</returns>
     public PieceScript setRowAndColumnOnChessBoard(int row, int column){
         rowOnChessBoard=row;
         columnOnChessBoard=column;
         return this;
     }
 
+    /// <summary>
+    /// move the piece to the specified row and column. Only change the objection's position
+    /// in unity world, not the logic place of this piece
+    /// </summary>
+    /// <param name="row">target row index</param>
+    /// <param name="column">target column index</param>
     public void hoverOn(int row, int column) {
         if(row<0||row>=8||column<0||column>=8){
             return;
@@ -79,7 +91,10 @@ public class PieceScript : MonoBehaviour {
         GetComponent<MeshRenderer>().materials = tmp;
     }
 
-
+    /// <summary>
+    /// check whether this piece can be moved to the specified position on chess board. This function will be override by subclasses.
+    /// </summary>
+    /// <returns>whether this piece can be moved to the specified position on chess board. </returns>
     public virtual bool checkMovementValidity(int targetRow, int targetColumn) {
         return true;
     }
