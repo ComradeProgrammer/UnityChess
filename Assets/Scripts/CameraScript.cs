@@ -19,7 +19,7 @@ public class CameraScript : MonoBehaviour {
                 selectObjectWithMouse();
             } else {
                 var currentPiece = currentObject.GetComponent<PieceScript>();
-                if (gameController.moveTo(currentPiece, currentPiece.row, currentPiece.column)) {
+                if (gameController.MoveTo(currentPiece, currentPiece.row, currentPiece.column)) {
                     currentObject = null;
                 }
 
@@ -34,9 +34,9 @@ public class CameraScript : MonoBehaviour {
                     //Debug.DrawRay(ray.origin,ray.direction*100000,Color.green,1000000);
                     var boardPosition = raycastHit.point;
                     int column, row;
-                    PieceScript.positionToRowColumn(boardPosition[0], boardPosition[2], out row, out column);
+                    PieceScript.PositionToRowColumn(boardPosition[0], boardPosition[2], out row, out column);
                     //Debug.LogFormat("{0} {1} {2}", row, column, boardPosition);
-                    gameController.hoverOn(currentObject.GetComponent<PieceScript>(), row, column);
+                    gameController.HoverOn(currentObject.GetComponent<PieceScript>(), row, column);
                 }
             }
         }
@@ -52,11 +52,11 @@ public class CameraScript : MonoBehaviour {
                 return false;
             }
             if (currentObject != null) {
-                currentObject.GetComponent<PieceScript>().switchToNormalApperance();
+                currentObject.GetComponent<PieceScript>().SwitchToNormalApperance();
             }
             //Debug.Log(currentObject.GetComponent<MeshRenderer>().materials[1]);
             currentObject = raycastHit.transform.gameObject;
-            currentObject.GetComponent<PieceScript>().switchToSelectedApperance();
+            currentObject.GetComponent<PieceScript>().SwitchToSelectedApperance();
             return true;
         }
         return false;
