@@ -53,12 +53,23 @@ public class PieceScript : MonoBehaviour {
     }
 
     /// <summary>
-    /// set value for rowOnChessBoard and columnOnChessBoard 
+    /// set value for rowOnChessBoard and columnOnChessBoard (e.g. the spawn will  be regarded as moved)
     /// </summary>
     /// <param name="row">value for rowOnChessBoard</param>
     /// <param name="column">value for columnOnChessBoard </param>
     /// <returns>this</returns>
-    public PieceScript SetRowAndColumnOnChessBoard(int row, int column) {
+    virtual public PieceScript SetRowAndColumnOnChessBoard(int row, int column) {
+        rowOnChessBoard = row;
+        columnOnChessBoard = column;
+        return this;
+    }
+    /// <summary>
+    /// init value for rowOnChessBoard and columnOnChessBoard with no other effects (e.g. the spawn will not be regarded as moved)
+    /// </summary>
+    /// <param name="row">value for rowOnChessBoard</param>
+    /// <param name="column">value for columnOnChessBoard </param>
+    /// <returns>this</returns>
+    virtual public PieceScript InitRowAndColumnOnChessBoard(int row, int column) {
         rowOnChessBoard = row;
         columnOnChessBoard = column;
         return this;

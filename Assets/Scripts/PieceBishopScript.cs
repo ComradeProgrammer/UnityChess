@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public class PieceRockScript : PieceScript {
+public class PieceBishopScript : PieceScript {
 
     private GameController gameController = null;
 
@@ -30,31 +30,21 @@ public class PieceRockScript : PieceScript {
             //a piece with same color is on the target place
             return false;
         }
-
-        //we need to check whether there is some other pieces blocking the way
-        if (targetColumn == columnOnChessBoard) {
-            int from = Mathf.Min(targetRow, rowOnChessBoard);
-            int to = Mathf.Max(targetRow, rowOnChessBoard);
-            for (int i = from + 1; i < to; i++) {
-                PieceScript middlePiece = gameController.GetPiece(i, targetColumn);
-                if (middlePiece != null) {
-                    //there is a piece in the way
-                    return false;
-                }
-            }
-            return true;
-        } else if (targetRow == rowOnChessBoard) {
-            int from = Mathf.Min(targetColumn, columnOnChessBoard);
-            int to = Mathf.Max(targetColumn, columnOnChessBoard);
-            for (int i = from + 1; i < to; i++) {
-                PieceScript middlePiece = gameController.GetPiece(targetRow, i);
-                if (middlePiece != null) {
-                    //there is a piece in the way
-                    return false;
-                }
-            }
-            return true;
+        if (Mathf.Abs(targetRow - rowOnChessBoard) != Mathf.Abs(targetColumn - columnOnChessBoard)) {
+            return false;
         }
-        return false;
+        int xstep = (int)(Mathf.Sign(targetRow - rowOnChessBoard));
+        int ystep = (int)(Mathf.Sign(targetColumn - columnOnChessBoard));
+        int xItr = rowOnChessBoard + xstep;
+        int yItr = columnOnChessBoard + ystep;
+        for (int i = 0; i < Mathf.Abs(targetRow - rowOnChessBoard) - 1; i++) {
+            PieceScript middlePiece = gameController.GetPiece(xItr, yItr);
+            if (middlePiece != null) {
+                return false;
+            }
+            xItr += xstep;
+            yItr += ystep;
+        }
+        return true;
     }
 };

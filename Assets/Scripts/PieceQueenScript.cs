@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public class PieceRockScript : PieceScript {
+public class PieceQueenScript : PieceScript {
 
     private GameController gameController = null;
 
@@ -33,6 +33,7 @@ public class PieceRockScript : PieceScript {
 
         //we need to check whether there is some other pieces blocking the way
         if (targetColumn == columnOnChessBoard) {
+            //left or right
             int from = Mathf.Min(targetRow, rowOnChessBoard);
             int to = Mathf.Max(targetRow, rowOnChessBoard);
             for (int i = from + 1; i < to; i++) {
@@ -44,6 +45,7 @@ public class PieceRockScript : PieceScript {
             }
             return true;
         } else if (targetRow == rowOnChessBoard) {
+            //up or down
             int from = Mathf.Min(targetColumn, columnOnChessBoard);
             int to = Mathf.Max(targetColumn, columnOnChessBoard);
             for (int i = from + 1; i < to; i++) {
@@ -52,6 +54,21 @@ public class PieceRockScript : PieceScript {
                     //there is a piece in the way
                     return false;
                 }
+            }
+            return true;
+        } else if (Mathf.Abs(targetRow - rowOnChessBoard) == Mathf.Abs(targetColumn - columnOnChessBoard)) {
+            //walk diagonally
+            int xstep = (int)(Mathf.Sign(targetRow - rowOnChessBoard));
+            int ystep = (int)(Mathf.Sign(targetColumn - columnOnChessBoard));
+            int xItr = rowOnChessBoard + xstep;
+            int yItr = columnOnChessBoard + ystep;
+            for (int i = 0; i < Mathf.Abs(targetRow - rowOnChessBoard) - 1; i++) {
+                PieceScript middlePiece = gameController.GetPiece(xItr, yItr);
+                if (middlePiece != null) {
+                    return false;
+                }
+                xItr += xstep;
+                yItr += ystep;
             }
             return true;
         }
