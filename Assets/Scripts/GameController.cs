@@ -14,8 +14,8 @@ public class GameController : MonoBehaviour {
     private bool isInPromotion = false;
     PieceScript pieceInPromotion = null;
 
-    public int whiteKingMove=0;
-    public int blackKingMove=0;
+    public int whiteKingMove = 0;
+    public int blackKingMove = 0;
     // Start is called before the first frame update
     void Start() {
         mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
@@ -78,7 +78,7 @@ public class GameController : MonoBehaviour {
         int hours = (int)(gameTime / 3600);
         int minutes = (int)((gameTime % 3600) / 60);
         int seconds = (int)(gameTime % 60);
-        textLeftTop.text = string.Format("Total Time {0,2:D2}:{1,2:D2}:{2,2:D2}", hours, minutes, seconds);
+        textLeftTop.text = string.Format("Total Time\n{0,2:D2}:{1,2:D2}:{2,2:D2}", hours, minutes, seconds);
 
         if (isInPromotion) {
             return;
@@ -160,7 +160,7 @@ public class GameController : MonoBehaviour {
         }
         if (!CheckMovementValidity(piece, targetRow, targetColumn)) {
             piece.SwitchToErrorApperance();
-            move=false;
+            move = false;
             return false;
         }
         piece.SwitchToNormalApperance();
@@ -178,11 +178,11 @@ public class GameController : MonoBehaviour {
                 promotionGUI.SetActive(true);
             }
         }
-        if(piece.GetPieceType()==PieceType.King){
-            if(piece.GetColor()==PieceColor.White){
-                whiteKingMove+=1;
-            }else{
-                blackKingMove+=1;
+        if (piece.GetPieceType() == PieceType.King) {
+            if (piece.GetColor() == PieceColor.White) {
+                whiteKingMove += 1;
+            } else {
+                blackKingMove += 1;
             }
         }
         return true;
@@ -318,5 +318,14 @@ public class GameController : MonoBehaviour {
         promotionGUI.SetActive(false);
         isInPromotion = false;
         swtichPlayer();
+    }
+
+    public void Quit() {
+        #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+        #else
+            Application.Quit();
+        #endif
+
     }
 }
