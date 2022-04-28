@@ -36,6 +36,9 @@ TagManager:
   - Queen Black
   - Rock Black
   - Rock Black 2
+  - ChessBoard
+  - TextLeftUp
+  - Promotion
   layers:
   - Default
   - TransparentFX

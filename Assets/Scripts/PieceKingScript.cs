@@ -42,4 +42,6 @@ public class PieceKingScript : PieceScript {
         }
         return false;
     }
+    public override PieceType GetPieceType(){return PieceType.King;}
+
 };

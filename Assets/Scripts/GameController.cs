@@ -1,11 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour {
-    // Start is called before the first frame update
+    private float gameTime = 0.0f;
     private PieceScript[][] pieces;
+    private Text textLeftTop;
+    private GameObject promotionGUI;
+    private GameObject mainCamera;
+    private GameObject currentObject = null;
+    private PieceColor currentPlayer = PieceColor.White;
+    private bool isInPromotion = false;
+    PieceScript pieceInPromotion = null;
+    // Start is called before the first frame update
     void Start() {
+        mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+        promotionGUI = GameObject.FindGameObjectWithTag("Promotion");
+        promotionGUI.SetActive(false);
+
+        textLeftTop = GameObject.FindGameObjectWithTag("TextLeftUp").GetComponent<Text>();
+        textLeftTop.text = "00:00:00";
+
+
         pieces = new PieceScript[8][];
         for (int i = 0; i < 8; i++) {
             pieces[i] = new PieceScript[8];
@@ -53,7 +70,49 @@ public class GameController : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        //update the time
+        gameTime += Time.deltaTime;
+        int hours = (int)(gameTime / 3600);
+        int minutes = (int)((gameTime % 3600) / 60);
+        int seconds = (int)(gameTime % 60);
+        textLeftTop.text = string.Format("Total Time {0,2:D2}:{1,2:D2}:{2,2:D2}", hours, minutes, seconds);
 
+        if (isInPromotion) {
+            return;
+        }
+
+        //handle the input event
+        if (Input.GetMouseButtonDown(0)) {
+            //mouse is pressed 
+            if (currentObject == null) {
+                selectObjectWithMouse();
+            } else {
+                var currentPiece = currentObject.GetComponent<PieceScript>();
+                bool move;
+                if (MoveTo(currentPiece, currentPiece.row, currentPiece.column, out move)) {
+                    currentObject = null;
+                    if (move && !isInPromotion) {
+                        swtichPlayer();
+                    }
+                }
+
+            }
+        } else {
+            //mouse is not pressed
+            if (currentObject != null) {
+                //move the selected piece
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit raycastHit = new RaycastHit();
+                if (Physics.Raycast(ray, out raycastHit)) {
+                    //Debug.DrawRay(ray.origin,ray.direction*100000,Color.green,1000000);
+                    var boardPosition = raycastHit.point;
+                    int column, row;
+                    PieceScript.PositionToRowColumn(boardPosition[0], boardPosition[2], out row, out column);
+                    //Debug.LogFormat("{0} {1} {2}", row, column, boardPosition);
+                    HoverOn(currentObject.GetComponent<PieceScript>(), row, column);
+                }
+            }
+        }
     }
 
     public PieceScript GetPiece(int row, int column) {
@@ -88,18 +147,34 @@ public class GameController : MonoBehaviour {
     /// <param name="piece">piece which is about to be moved</param>
     /// <param name="targetRow">row number of target position</param>
     /// <param name="targetColumn">column number of target position</param>
-    /// <returns>whether it is leagal to do so</returns>
-    internal bool MoveTo(PieceScript piece, int targetRow, int targetColumn) {
-        if (CheckMovementValidity(piece, targetRow, targetColumn)) {
-            piece.SwitchToNormalApperance();
-            pieces[piece.rowOnChessBoard][piece.columnOnChessBoard] = null;
-            pieces[targetRow][targetColumn] = piece;
-            piece.SetRowAndColumnOnChessBoard(targetRow,targetColumn);
-            return true;
+    /// <param name="move">whether this can be regarded as a move</param>
+    /// <returns>whether it is leagal to do so(whether this piece can be released)</returns>
+    internal bool MoveTo(PieceScript piece, int targetRow, int targetColumn, out bool move) {
+        if (piece.rowOnChessBoard == targetRow && piece.columnOnChessBoard == targetColumn) {
+            move = false;
         } else {
+            move = true;
+        }
+        if (!CheckMovementValidity(piece, targetRow, targetColumn)) {
             piece.SwitchToErrorApperance();
             return false;
         }
+        piece.SwitchToNormalApperance();
+        pieces[piece.rowOnChessBoard][piece.columnOnChessBoard] = null;
+        if (pieces[targetRow][targetColumn] != null) {
+            Destroy(pieces[targetRow][targetColumn].gameObject);
+        }
+        pieces[targetRow][targetColumn] = piece;
+        piece.SetRowAndColumnOnChessBoard(targetRow, targetColumn);
+        //for promotion
+        if (piece.GetPieceType() == PieceType.Pawn) {
+            if (piece.GetColor() == PieceColor.White && targetRow == 7 || piece.GetColor() == PieceColor.Black && targetRow == 0) {
+                isInPromotion = true;
+                pieceInPromotion = piece;
+                promotionGUI.SetActive(true);
+            }
+        }
+        return true;
     }
 
     /// <summary>
@@ -118,5 +193,119 @@ public class GameController : MonoBehaviour {
             piece.SwitchToErrorApperance();
         }
         piece.HoverOn(targetRow, targetColumn);
+    }
+
+    /// <summary>
+    ///  use a RaycastHit to select a object, and set it to the currentObject
+    /// </summary>
+    bool selectObjectWithMouse() {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit raycastHit = new RaycastHit();
+        if (Physics.Raycast(ray, out raycastHit)) {
+            if (raycastHit.transform.gameObject.GetComponent<PieceScript>() == null) {
+                //if the chosen one is not piece, return
+                return false;
+            }
+            if (currentObject != null) {
+                currentObject.GetComponent<PieceScript>().SwitchToNormalApperance();
+            }
+            //Debug.Log(currentObject.GetComponent<MeshRenderer>().materials[1]);
+            currentObject = raycastHit.transform.gameObject;
+            currentObject.GetComponent<PieceScript>().SwitchToSelectedApperance();
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// switch the camera to another side+
+    /// </summary>
+    void swtichPlayer() {
+        if (currentPlayer == PieceColor.Black) {
+            mainCamera.transform.position = new Vector3(-3.5f, 3.5f, 0f);
+            mainCamera.transform.rotation = Quaternion.Euler(new Vector3(55f, 90f, 0f));
+            currentPlayer = PieceColor.White;
+        } else {
+            mainCamera.transform.position = new Vector3(3.5f, 3.5f, 0f);
+            mainCamera.transform.rotation = Quaternion.Euler(new Vector3(55f, -90f, 0f));
+            currentPlayer = PieceColor.Black;
+        }
+    }
+
+    public void onQueenPromotion() {
+        int x = pieceInPromotion.rowOnChessBoard;
+        int y = pieceInPromotion.columnOnChessBoard;
+        GameObject obj, newObj;
+        if (pieceInPromotion.GetColor() == PieceColor.White) {
+            obj = GameObject.FindGameObjectWithTag("Queen White");
+        } else {
+            obj = GameObject.FindGameObjectWithTag("Queen Black");
+        }
+        newObj = Instantiate(obj, pieceInPromotion.transform.parent);
+        newObj.GetComponent<PieceScript>().InitRowAndColumnOnChessBoard(x, y).SetColor(pieceInPromotion.GetColor()).HoverOn(x, y);
+        pieces[x][y] = newObj.GetComponent<PieceScript>();
+        Destroy(pieceInPromotion.gameObject);
+
+        //remove the menu and restore isInPromotion
+        promotionGUI.SetActive(false);
+        isInPromotion = false;
+        swtichPlayer();
+    }
+    public void onKnightPromotion() {
+        int x = pieceInPromotion.rowOnChessBoard;
+        int y = pieceInPromotion.columnOnChessBoard;
+        GameObject obj, newObj;
+        if (pieceInPromotion.GetColor() == PieceColor.White) {
+            obj = GameObject.FindGameObjectWithTag("Knight White");
+        } else {
+            obj = GameObject.FindGameObjectWithTag("Knight Black");
+        }
+        newObj = Instantiate(obj, pieceInPromotion.transform.parent);
+        newObj.GetComponent<PieceScript>().InitRowAndColumnOnChessBoard(x, y).SetColor(pieceInPromotion.GetColor()).HoverOn(x, y);
+        pieces[x][y] = newObj.GetComponent<PieceScript>();
+        Destroy(pieceInPromotion.gameObject);
+
+        //remove the menu and restore isInPromotion
+        promotionGUI.SetActive(false);
+        isInPromotion = false;
+        swtichPlayer();
+    }
+    public void onBishopPromotion() {
+        int x = pieceInPromotion.rowOnChessBoard;
+        int y = pieceInPromotion.columnOnChessBoard;
+        GameObject obj, newObj;
+        if (pieceInPromotion.GetColor() == PieceColor.White) {
+            obj = GameObject.FindGameObjectWithTag("Bishop White");
+        } else {
+            obj = GameObject.FindGameObjectWithTag("Bishop Black");
+        }
+        newObj = Instantiate(obj, pieceInPromotion.transform.parent);
+        newObj.GetComponent<PieceScript>().InitRowAndColumnOnChessBoard(x, y).SetColor(pieceInPromotion.GetColor()).HoverOn(x, y);
+        pieces[x][y] = newObj.GetComponent<PieceScript>();
+        Destroy(pieceInPromotion.gameObject);
+
+        //remove the menu and restore isInPromotion
+        promotionGUI.SetActive(false);
+        isInPromotion = false;
+        swtichPlayer();
+    }
+    public void onRockPromotion() {
+        int x = pieceInPromotion.rowOnChessBoard;
+        int y = pieceInPromotion.columnOnChessBoard;
+        GameObject obj, newObj;
+        if (pieceInPromotion.GetColor() == PieceColor.White) {
+            obj = GameObject.FindGameObjectWithTag("Rock White");
+        } else {
+            obj = GameObject.FindGameObjectWithTag("Rock Black");
+        }
+        newObj = Instantiate(obj, pieceInPromotion.transform.parent);
+        newObj.GetComponent<PieceScript>().InitRowAndColumnOnChessBoard(x, y).SetColor(pieceInPromotion.GetColor()).HoverOn(x, y);
+        pieces[x][y] = newObj.GetComponent<PieceScript>();
+        Destroy(pieceInPromotion.gameObject);
+
+        //remove the menu and restore isInPromotion
+        promotionGUI.SetActive(false);
+        isInPromotion = false;
+        swtichPlayer();
     }
 }

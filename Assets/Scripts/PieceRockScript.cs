@@ -57,4 +57,5 @@ public class PieceRockScript : PieceScript {
         }
         return false;
     }
+    public override PieceType GetPieceType(){return PieceType.Rock;}
 };

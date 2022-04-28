@@ -74,4 +74,6 @@ public class PieceQueenScript : PieceScript {
         }
         return false;
     }
+    public override PieceType GetPieceType(){return PieceType.Queen;}
+
 };

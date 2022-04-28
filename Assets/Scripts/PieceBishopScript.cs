@@ -47,4 +47,6 @@ public class PieceBishopScript : PieceScript {
         }
         return true;
     }
+    public override PieceType GetPieceType(){return PieceType.Bishop;}
+
 };

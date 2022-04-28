@@ -7,7 +7,16 @@ public enum PieceColor {
     Black
 };
 
-public class PieceScript : MonoBehaviour {
+public enum PieceType {
+    Bishop,
+    King,
+    Knight,
+    Pawn,
+    Queen,
+    Rock,
+}
+
+abstract public class PieceScript : MonoBehaviour {
     private Material originalMaterial = null;
     private Material selectedMaterial = null;
     private Material errorMaterial = null;
@@ -115,6 +124,8 @@ public class PieceScript : MonoBehaviour {
     public virtual bool CheckMovementValidity(int targetRow, int targetColumn) {
         return true;
     }
+
+    public abstract PieceType GetPieceType();
 
 
     public PieceColor GetColor() {

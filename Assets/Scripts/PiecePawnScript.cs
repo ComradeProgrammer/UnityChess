@@ -58,5 +58,7 @@ public class PiecePawnScript : PieceScript {
         }
         return false;
     }
+    public override PieceType GetPieceType(){return PieceType.Pawn;}
+
 
 };

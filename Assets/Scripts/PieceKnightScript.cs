@@ -39,4 +39,6 @@ public class PieceKnightScript : PieceScript {
         }
         return false;
     }
+    public override PieceType GetPieceType(){return PieceType.Knight;}
+
 };
