@@ -7,19 +7,19 @@ It looks like this
 
 
 
-![Screenshot 2022-04-28 214951](readme/Screenshot 2022-04-28 214951.png)
+![Screenshot 2022-04-28 214951](https://github.com/ComradeProgrammer/UnityChess/blob/main/readme/214951.png)
 
 When you try to move a piece
 
-![Screenshot 2022-04-28 215030](readme/Screenshot 2022-04-28 215030.png)
+![Screenshot 2022-04-28 215030](https://github.com/ComradeProgrammer/UnityChess/blob/main/readme/215030.png)
 
 or
 
-![Screenshot 2022-04-28 215055](readme/Screenshot 2022-04-28 215055.png)
+![Screenshot 2022-04-28 215055](https://github.com/ComradeProgrammer/UnityChess/blob/main/readme/215055.png)
 
 and promotion for pawn
 
-![Screenshot 2022-04-28 215256](readme/Screenshot 2022-04-28 215256.png)
+![Screenshot 2022-04-28 215256](https://github.com/ComradeProgrammer/UnityChess/blob/main/readme/215256.png)
 
 UGLY UI right?
 
