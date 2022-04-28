@@ -3,8 +3,9 @@ A small 3D chess game written in Unity. Purely the toy product of my attemp to s
 
 <del>(I am sure that every game player used to have a dream of makeing a game by himself, especially he/she is a programmer......)</del>
 
-It looks like this 
+Binary file for Win10 x64 is here [link](https://github.com/ComradeProgrammer/UnityChess/blob/main/chess3D_win10_x64.zip). Just download it and decomress it, click the Unity.exe and then play it.
 
+It looks like this 
 
 
 ![Screenshot 2022-04-28 214951](https://github.com/ComradeProgrammer/UnityChess/blob/main/readme/214951.png)
