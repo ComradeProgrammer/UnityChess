@@ -13,6 +13,9 @@ public class GameController : MonoBehaviour {
     private PieceColor currentPlayer = PieceColor.White;
     private bool isInPromotion = false;
     PieceScript pieceInPromotion = null;
+
+    public int whiteKingMove=0;
+    public int blackKingMove=0;
     // Start is called before the first frame update
     void Start() {
         mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
@@ -52,8 +55,8 @@ public class GameController : MonoBehaviour {
         pieces[7][0] = GameObject.FindGameObjectWithTag("Rock Black").GetComponent<PieceScript>().InitRowAndColumnOnChessBoard(7, 0).SetColor(PieceColor.Black);
         pieces[7][1] = GameObject.FindGameObjectWithTag("Knight Black").GetComponent<PieceScript>().InitRowAndColumnOnChessBoard(7, 1).SetColor(PieceColor.Black);
         pieces[7][2] = GameObject.FindGameObjectWithTag("Bishop Black 2").GetComponent<PieceScript>().InitRowAndColumnOnChessBoard(7, 2).SetColor(PieceColor.Black);
-        pieces[7][3] = GameObject.FindGameObjectWithTag("King Black").GetComponent<PieceScript>().InitRowAndColumnOnChessBoard(7, 3).SetColor(PieceColor.Black);
-        pieces[7][4] = GameObject.FindGameObjectWithTag("Queen Black").GetComponent<PieceScript>().InitRowAndColumnOnChessBoard(7, 4).SetColor(PieceColor.Black);
+        pieces[7][3] = GameObject.FindGameObjectWithTag("King Black").GetComponent<PieceScript>().InitRowAndColumnOnChessBoard(7, 4).SetColor(PieceColor.Black);
+        pieces[7][4] = GameObject.FindGameObjectWithTag("Queen Black").GetComponent<PieceScript>().InitRowAndColumnOnChessBoard(7, 3).SetColor(PieceColor.Black);
         pieces[7][5] = GameObject.FindGameObjectWithTag("Bishop Black").GetComponent<PieceScript>().InitRowAndColumnOnChessBoard(7, 5).SetColor(PieceColor.Black);
         pieces[7][6] = GameObject.FindGameObjectWithTag("Knight Black 2").GetComponent<PieceScript>().InitRowAndColumnOnChessBoard(7, 6).SetColor(PieceColor.Black);
         pieces[7][7] = GameObject.FindGameObjectWithTag("Rock Black 2").GetComponent<PieceScript>().InitRowAndColumnOnChessBoard(7, 7).SetColor(PieceColor.Black);
@@ -157,6 +160,7 @@ public class GameController : MonoBehaviour {
         }
         if (!CheckMovementValidity(piece, targetRow, targetColumn)) {
             piece.SwitchToErrorApperance();
+            move=false;
             return false;
         }
         piece.SwitchToNormalApperance();
@@ -172,6 +176,13 @@ public class GameController : MonoBehaviour {
                 isInPromotion = true;
                 pieceInPromotion = piece;
                 promotionGUI.SetActive(true);
+            }
+        }
+        if(piece.GetPieceType()==PieceType.King){
+            if(piece.GetColor()==PieceColor.White){
+                whiteKingMove+=1;
+            }else{
+                blackKingMove+=1;
             }
         }
         return true;

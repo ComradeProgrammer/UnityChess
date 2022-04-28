@@ -4,7 +4,7 @@ using UnityEngine;
 public class PieceRockScript : PieceScript {
 
     private GameController gameController = null;
-
+    private bool firstTimeMove = true;
     new protected void Start() {
         base.Start();
         gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
@@ -13,6 +13,10 @@ public class PieceRockScript : PieceScript {
     // Update is called once per frame
     new protected void Update() {
 
+    }
+    public override PieceScript SetRowAndColumnOnChessBoard(int row, int column) {
+        firstTimeMove = false;
+        return base.SetRowAndColumnOnChessBoard(row, column);
     }
 
     public override bool CheckMovementValidity(int targetRow, int targetColumn) {
@@ -30,7 +34,31 @@ public class PieceRockScript : PieceScript {
             //a piece with same color is on the target place
             return false;
         }
-
+        //special rule: Castling
+        if (GetColor() == PieceColor.White && firstTimeMove) {
+            if (gameController.whiteKingMove == 2 && rowOnChessBoard == 0 && columnOnChessBoard == 0 && gameController.GetPiece(0, 2).GetPieceType() == PieceType.King) {
+                if (targetRow == 0 && targetColumn == 3) {
+                    return true;
+                }
+            }
+            if (gameController.whiteKingMove == 2 && rowOnChessBoard == 0 && columnOnChessBoard == 7 && gameController.GetPiece(0, 6).GetPieceType() == PieceType.King) {
+                if (targetRow == 0 && targetColumn == 5) {
+                    return true;
+                }
+            }
+        }
+        if (GetColor() == PieceColor.Black && firstTimeMove) {
+            if (gameController.whiteKingMove == 2 && rowOnChessBoard == 7 && columnOnChessBoard == 0 && gameController.GetPiece(7, 2).GetPieceType() == PieceType.King) {
+                if (targetRow == 7 && targetColumn == 3) {
+                    return true;
+                }
+            }
+            if (gameController.whiteKingMove == 2 && rowOnChessBoard == 7 && columnOnChessBoard == 7 && gameController.GetPiece(7, 6).GetPieceType() == PieceType.King) {
+                if (targetRow == 7 && targetColumn == 5) {
+                    return true;
+                }
+            }
+        }
         //we need to check whether there is some other pieces blocking the way
         if (targetColumn == columnOnChessBoard) {
             int from = Mathf.Min(targetRow, rowOnChessBoard);
@@ -57,5 +85,5 @@ public class PieceRockScript : PieceScript {
         }
         return false;
     }
-    public override PieceType GetPieceType(){return PieceType.Rock;}
+    public override PieceType GetPieceType() { return PieceType.Rock; }
 };
